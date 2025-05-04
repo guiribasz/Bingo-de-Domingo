@@ -1,158 +1,365 @@
-
 <!DOCTYPE html>
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <title>Bingo do Domingo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bingo de Domingo</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Press+Start+2P&display=swap');
+    
+    :root {
+      --neon-pink: #ff2a6d;
+      --neon-blue: #05d9e8;
+      --neon-purple: #d300c5;
+      --neon-green: #00ff9d;
+      --dark-bg: #0d0221;
+      --darker-bg: #05010e;
+    }
+    
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Orbitron', sans-serif;
       text-align: center;
-      background-color: #f0f0f0;
+      background-color: var(--dark-bg);
+      background-image: 
+        linear-gradient(45deg, var(--darker-bg) 25%, transparent 25%),
+        linear-gradient(-45deg, var(--darker-bg) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, var(--darker-bg) 75%),
+        linear-gradient(-45deg, transparent 75%, var(--darker-bg) 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+      color: var(--neon-blue);
+      overflow-x: hidden;
+      min-height: 100vh;
+      margin: 0;
+      padding: 10px;
+      box-sizing: border-box;
     }
+    
     h1 {
-      margin-top: 30px;
-      font-size: 32px;
-      color: #333;
+      margin: 15px 0;
+      font-size: clamp(20px, 6vw, 32px);
+      color: var(--neon-pink);
+      text-shadow: 
+        0 0 5px var(--neon-pink),
+        0 0 10px var(--neon-pink),
+        0 0 20px var(--neon-pink);
+      animation: pulsate 1.5s infinite alternate;
+      letter-spacing: 1px;
     }
-    table {
-      margin: 20px auto;
-      border-collapse: collapse;
+    
+    @keyframes pulsate {
+      0%, 100% {
+        text-shadow: 
+          0 0 5px var(--neon-pink),
+          0 0 10px var(--neon-pink),
+          0 0 20px var(--neon-pink);
+        transform: scale(1);
+      }
+      50% {
+        text-shadow: 
+          0 0 10px var(--neon-pink),
+          0 0 20px var(--neon-pink),
+          0 0 30px var(--neon-pink),
+          0 0 40px var(--neon-purple);
+        transform: scale(1.05);
+      }
     }
-    td {
-      padding: 0;
-    }
-    button {
-      width: 110px;
-      height: 70px;
-      font-size: 13px;
-      font-weight: bold;
-      margin: 3px;
-      background-color: white;
-      border: 2px solid #444;
+    
+    .cyber-container {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 15px;
+      border: 2px solid var(--neon-blue);
+      box-shadow: 
+        0 0 8px var(--neon-blue),
+        0 0 15px var(--neon-blue),
+        inset 0 0 8px var(--neon-blue);
+      background-color: rgba(13, 2, 33, 0.85);
       border-radius: 12px;
+    }
+    
+    .bingo-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin: 15px auto;
+    }
+    
+    .bingo-cell {
+      position: relative;
+      width: 100%;
+      padding-bottom: 100%; /* Mantém formato quadrado */
+      background-color: rgba(5, 217, 232, 0.1);
+      border: 1.5px solid var(--neon-blue);
+      border-radius: 8px;
       cursor: pointer;
-      transition: all 0.5s ease;
-      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      box-shadow: 
+        0 0 4px var(--neon-blue),
+        inset 0 0 4px var(--neon-blue);
+      overflow: hidden;
     }
-    button.active {
-      background-color: #4CAF50;
+    
+    .bingo-cell-content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px;
+      box-sizing: border-box;
+      font-size: clamp(8px, 2.5vw, 10px);
+      font-weight: bold;
+      color: var(--neon-green);
+      text-shadow: 0 0 3px var(--neon-green);
+      text-align: center;
+      word-break: break-word;
+      overflow: hidden;
+    }
+    
+    .bingo-cell::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, 
+        var(--neon-blue), var(--neon-purple), var(--neon-pink), var(--neon-green));
+      background-size: 400%;
+      opacity: 0;
+      transition: 0.4s;
+      z-index: 0;
+      filter: blur(3px);
+    }
+    
+    .bingo-cell:hover::before {
+      opacity: 0.7;
+      animation: animate 6s linear infinite;
+    }
+    
+    @keyframes animate {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+    
+    .bingo-cell.active {
+      background-color: rgba(255, 42, 109, 0.15);
+      border-color: var(--neon-pink);
+      transform: scale(0.97);
+      box-shadow: 
+        0 0 10px var(--neon-pink),
+        inset 0 0 8px var(--neon-pink);
+    }
+    
+    .bingo-cell.active .bingo-cell-content {
       color: white;
-      transform: scale(1.05);
-      box-shadow: 0 0 10px rgba(76, 175, 80, 0.7);
+      text-shadow: 0 0 6px white;
     }
+    
+    .bingo-cell.active::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, 
+        var(--neon-pink), var(--neon-purple), var(--neon-blue), var(--neon-green));
+      background-size: 400%;
+      z-index: 0;
+      opacity: 0.6;
+      animation: animate 6s linear infinite;
+      filter: blur(2px);
+      border-radius: 6px;
+    }
+    
     #mensagem-bingo {
-      font-size: 36px;
-      margin-top: 20px;
+      font-size: clamp(20px, 6vw, 36px);
+      margin: 15px 0;
       font-weight: bold;
       height: 50px;
       opacity: 0;
-      transition: all 0.5s ease;
+      transition: all 0.4s ease;
+      font-family: 'Press Start 2P', cursive;
+      text-transform: uppercase;
     }
+    
     #mensagem-bingo.bingo {
-      color: #4CAF50;
+      color: var(--neon-green);
       opacity: 1;
-      animation: pulsar 1.5s infinite;
+      text-shadow: 
+        0 0 5px var(--neon-green),
+        0 0 10px var(--neon-green),
+        0 0 20px var(--neon-green);
+      animation: 
+        pulsate 0.5s infinite alternate,
+        glitch 0.8s linear infinite;
     }
-    @keyframes pulsar {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
+    
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(-2px, -2px); }
+      60% { transform: translate(2px, 2px); }
+      80% { transform: translate(2px, -2px); }
+      100% { transform: translate(0); }
+    }
+    
+    .scanlines {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        linear-gradient(
+          rgba(5, 217, 232, 0.03) 1px, 
+          transparent 1px
+        );
+      background-size: 100% 3px;
+      pointer-events: none;
+      z-index: 1000;
+      animation: scanline 6s linear infinite;
+    }
+    
+    @keyframes scanline {
+      from { background-position: 0 0; }
+      to { background-position: 0 100%; }
     }
   </style>
 </head>
 <body>
+  <div class="scanlines"></div>
+  
+  <div class="cyber-container">
+    <h1>Bingo de Domingo</h1>
 
-<h1>Bingo do Domingo</h1>
+    <div class="bingo-grid" id="bingo-grid">
+      <!-- Células serão geradas pelo JavaScript -->
+    </div>
 
-<table id="bingo">
-  <tbody>
-    <tr>
-      <td><button onclick="marcar(this)">Moto GP</button></td>
-      <td><button onclick="marcar(this)">Paulo Médico e Amigos</button></td>
-      <td><button onclick="marcar(this)">Tozé</button></td>
-      <td><button onclick="marcar(this)">Zombie</button></td>
-      <td><button onclick="marcar(this)">Côro</button></td>
-    </tr>
-    <tr>
-      <td><button onclick="marcar(this)">Ma frend</button></td>
-      <td><button onclick="marcar(this)">Paulo Veiga</button></td>
-      <td><button onclick="marcar(this)">Mohameds dos cafés</button></td>
-      <td><button onclick="marcar(this)">MIT</button></td>
-      <td><button onclick="marcar(this)">Putos v2.0</button></td>
-    </tr>
-    <tr>
-      <td><button onclick="marcar(this)">Andrade (Gordo)</button></td>
-      <td><button onclick="marcar(this)">Suíço</button></td>
-      <td><button onclick="marcar(this)">Velha da Bengala</button></td>
-      <td><button onclick="marcar(this)">Ingleses do Almoço</button></td>
-      <td><button onclick="marcar(this)">Jorge e Luiz</button></td>
-    </tr>
-    <tr>
-      <td><button onclick="marcar(this)">Hugo</button></td>
-      <td><button onclick="marcar(this)">Irmão do Andrade</button></td>
-      <td><button onclick="marcar(this)">Franguinho</button></td>
-      <td><button onclick="marcar(this)">Cândida</button></td>
-      <td><button onclick="marcar(this)">Putos</button></td>
-    </tr>
-    <tr>
-      <td><button onclick="marcar(this)">Zé Manel</button></td>
-      <td><button onclick="marcar(this)">Arquiteto</button></td>
-      <td><button onclick="marcar(this)">Pinoni</button></td>
-      <td><button onclick="marcar(this)">Sofrência</button></td>
-      <td><button onclick="marcar(this)">Forcado</button></td>
-    </tr>
-  </tbody>
-</table>
+    <div id="mensagem-bingo"></div>
+  </div>
 
-<div id="mensagem-bingo"></div>
+  <script>
+    // Dados do Bingo
+    const bingoItems = [
+      "Moto GP", "Paulo Médico e Amigos", "Tozé", "Zombie", "Côro",
+      "Ma frend", "Paulo Veiga", "Mohameds dos cafés", "MIT", "Putos v2.0",
+      "Andrade (Gordo)", "Suíço", "Velha da Bengala", "Ingleses do Almoço", "Jorge e Luiz",
+      "Hugo", "Irmão do Andrade", "Franguinho", "Cândida", "Putos",
+      "Zé Manel", "Arquiteto", "Pinoni", "Sofrência", "Forcado"
+    ];
 
-<script>
-  function marcar(btn) {
-    btn.classList.toggle('active');
-    verificarBingo();
-  }
+    // Gerar grid 5x5
+    const grid = document.getElementById('bingo-grid');
+    bingoItems.forEach(item => {
+      const cell = document.createElement('div');
+      cell.className = 'bingo-cell';
+      
+      const content = document.createElement('div');
+      content.className = 'bingo-cell-content';
+      content.textContent = item;
+      
+      cell.appendChild(content);
+      
+      cell.addEventListener('click', function() {
+        this.classList.toggle('active');
+        verificarBingo();
+        
+        // Feedback tátil (se suportado)
+        if (window.navigator.vibrate) {
+          window.navigator.vibrate(10);
+        }
+      });
+      
+      grid.appendChild(cell);
+    });
 
-  function verificarBingo() {
-    const botoes = document.querySelectorAll('#bingo button');
-    const matriz = Array.from({ length: 5 }, (_, i) =>
-      Array.from({ length: 5 }, (_, j) => botoes[i * 5 + j])
-    );
-
-    let bingo = false;
-
-    // Verifica linhas
-    for (let i = 0; i < 5; i++) {
-      if (matriz[i].every(btn => btn.classList.contains('active'))) {
-        bingo = true;
+    function verificarBingo() {
+      const cells = document.querySelectorAll('.bingo-cell');
+      const activeIndices = Array.from(cells).map((cell, index) => 
+        cell.classList.contains('active') ? index : null
+      ).filter(index => index !== null);
+      
+      const bingoLines = [
+        // Linhas
+        [0, 1, 2, 3, 4], [5, 6, 7, 8, 9], [10, 11, 12, 13, 14],
+        [15, 16, 17, 18, 19], [20, 21, 22, 23, 24],
+        // Colunas
+        [0, 5, 10, 15, 20], [1, 6, 11, 16, 21], [2, 7, 12, 17, 22],
+        [3, 8, 13, 18, 23], [4, 9, 14, 19, 24],
+        // Diagonais
+        [0, 6, 12, 18, 24], [4, 8, 12, 16, 20]
+      ];
+      
+      let bingo = false;
+      
+      bingoLines.forEach(line => {
+        if (line.every(index => cells[index].classList.contains('active'))) {
+          bingo = true;
+          // Efeito visual para a linha completa
+          line.forEach(index => {
+            cells[index].style.animation = 'none';
+            void cells[index].offsetWidth; // Trigger reflow
+            cells[index].style.animation = 'pulseRow 0.4s 2';
+          });
+        }
+      });
+      
+      const mensagem = document.getElementById('mensagem-bingo');
+      if (bingo) {
+        mensagem.textContent = 'BINGO!';
+        mensagem.classList.add('bingo');
+        
+        // Efeito de confete
+        setTimeout(() => {
+          const colors = ['#ff2a6d', '#05d9e8', '#d300c5', '#00ff9d'];
+          for (let i = 0; i < 60; i++) {
+            const confetti = document.createElement('div');
+            confetti.style.position = 'fixed';
+            confetti.style.width = '4px';
+            confetti.style.height = '4px';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.left = Math.random() * window.innerWidth + 'px';
+            confetti.style.top = '-10px';
+            confetti.style.borderRadius = '50%';
+            confetti.style.boxShadow = `0 0 4px 1px ${colors[Math.floor(Math.random() * colors.length)]}`;
+            confetti.style.animation = `fall ${Math.random() * 2 + 1.5}s linear forwards`;
+            document.body.appendChild(confetti);
+            
+            setTimeout(() => {
+              confetti.remove();
+            }, 3500);
+          }
+        }, 300);
+      } else {
+        mensagem.textContent = '';
+        mensagem.classList.remove('bingo');
       }
     }
 
-    // Verifica colunas
-    for (let j = 0; j < 5; j++) {
-      if (matriz.every(row => row[j].classList.contains('active'))) {
-        bingo = true;
+    // Adicionar animações dinâmicas
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes pulseRow {
+        0% { transform: scale(1); box-shadow: 0 0 8px var(--neon-pink); }
+        50% { transform: scale(0.97); box-shadow: 0 0 15px var(--neon-pink); }
+        100% { transform: scale(1); box-shadow: 0 0 8px var(--neon-pink); }
       }
-    }
-
-    // Verifica diagonais
-    if (matriz.every((row, i) => row[i].classList.contains('active'))) {
-      bingo = true;
-    }
-    if (matriz.every((row, i) => row[4 - i].classList.contains('active'))) {
-      bingo = true;
-    }
-
-    const mensagem = document.getElementById('mensagem-bingo');
-    if (bingo) {
-      mensagem.textContent = 'BINGO!';
-      mensagem.classList.add('bingo');
-    } else {
-      mensagem.textContent = '';
-      mensagem.classList.remove('bingo');
-    }
-  }
-</script>
-
+      
+      @keyframes fall {
+        to { transform: translateY(${window.innerHeight + 10}px) rotate(180deg); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
 </body>
 </html>
+
